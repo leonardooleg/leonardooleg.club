@@ -71,6 +71,7 @@ class SiteController extends Controller
                DB::raw("GROUP_CONCAT(colors.img_color) as img_colors"),
                DB::raw("GROUP_CONCAT(sizes.brand_name_size) as brand_name_sizes")
            )
+           ->where('products.published', '1')
            ->groupBy('products.id','categories.path','categories.title')
            ->limit(8)->get();
 
@@ -170,7 +171,8 @@ class SiteController extends Controller
             )
             ->groupBy('products.id','categories.path','categories.title')
             ->paginate(4);
-        $products=Product::paginate(4);
+
+
         return response()->json($products);
     }
 

@@ -1,6 +1,7 @@
 
 <script type="application/javascript">
     var _token = '<?php echo csrf_token() ?>';
+    console.log('go');
     $(document).ready(function() {
             @if(!preg_match("/login/", $_SERVER['REQUEST_URI']))
             @if(preg_match('!html!', $_SERVER['REQUEST_URI']))

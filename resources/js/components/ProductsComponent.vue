@@ -78,18 +78,17 @@ export default {
 
     methods: {
         infiniteHandler($state) {
-            console.log('start');
             let timeOut = 0;
             if (this.page > 1) {
-                timeOut = 1000;
+                timeOut = 100;
             }
             setTimeout(() => {
                 let vm = this;
                 let get_link;
                 if(vm.path)  get_link = '/products?'+vm.link+'&path='+vm.path+'&page='+this.page;
                 else  get_link = '/products?'+vm.link+'&page='+this.page;
-                console.log(get_link);
-                console.debug(get_link);
+                //console.log(get_link);
+                //console.debug(get_link);
                 window.axios.get(get_link).then(({ data }) => {
                     vm.lastPage = data.last_page;
                     $.each(data.data, function(key, value){
