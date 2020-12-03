@@ -55,7 +55,7 @@ Auth::routes();
 Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->name('admin.')->group(static function() {
 
     Route::middleware('auth')->group(static function () {
-        Route::middleware(['permission:Admin'])->group(static function () {
+      //  Route::middleware(['permission:Admin'])->group(static function () {
             Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'dashboard'])->name('index');
             Route::resource('/orders', OrdersController::class)->names('orders');
             Route::resource('/shop', ShopController::class)->names('shop');
@@ -84,17 +84,17 @@ Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->name('admin.')-
             Route::resource('/roles', RoleController::class)->names('roles');
         });
 
-        });
-    });
+       // });
+   });
 });
 
 Route::prefix('profile')->group(static function() {
-    Route::middleware(['permission:buyer'])->group(static function () {
+   // Route::middleware(['permission:buyer'])->group(static function () {
         Route::get('/', [ProfileController::class ,'index'])->name('panels');
         Route::get('/edit', [ProfileController::class ,'profileEdit'])->name('profile');
         Route::post('/update', [ProfileController::class ,'profileUpdate'])->name('profile.update');
         Route::post('/avatar', [ProfileController::class ,'avatar'])->name('avatar');
-   });
+   //});
 });
 
 Route::get('home', function () {

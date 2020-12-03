@@ -266,10 +266,11 @@ class ProductController extends Controller
                     if(isset($product)) {
                         if ($product->vendor_code == $code) {
                             $product->count = $product->count + 1;
+                            $product->save();
                             //знов повтор вставки розміру і кольору
                             $attributes = $product->attributes($product, $arr);
+                            continue;
                         } else {
-                            $product->save();
                             Storage::disk('public')->put($status_api, $all_rows . ';' . $i . ';' . $arr[8]);
                         }
                     }
@@ -305,14 +306,14 @@ class ProductController extends Controller
                         }
 /////
 
-
+                        $product->count= 1;
                         $product->new= 0;
                         if($arr[17]=="Да")
                             $product->sale = 1;
                         else
                             $product->sale = 0;
                         $product->price= $arr[7];
-                        $product->count= 1;
+
                         DB::table('attributeables')->where('product_id', '=', $product->id)->delete();
                         $attributes = $product->attributes($product, $arr);
                     }else{
