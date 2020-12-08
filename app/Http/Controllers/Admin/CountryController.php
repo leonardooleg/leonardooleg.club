@@ -7,9 +7,9 @@ use App\Models\Country;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Redirect;
-use function App\Http\Controllers\Admin;
 
-class countryController extends Controller
+
+class CountryController extends Controller
 {
 
     /**

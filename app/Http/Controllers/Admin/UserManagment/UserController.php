@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\UserManagment;
 
 use App\Http\Controllers\Controller;
-use App\User;
+use App\Models\User;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
@@ -16,11 +16,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:admin', ['only' => ['index', 'show', 'create', 'edit', 'update', 'store', 'destroy']]);
-        $this->middleware('permission:user-list|user-create|user-edit|user-delete', ['only' => ['index', 'show']]);
-        $this->middleware('permission:user-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:user-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:user-delete', ['only' => ['destroy']]);
+        $this->middleware('role:Admin');
     }
 
     /**

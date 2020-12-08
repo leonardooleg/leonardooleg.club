@@ -16,13 +16,13 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "harimayco/laravel-menu": "^1.4",
-        "kalnoy/nestedset": "^5.0",
+        "kalnoy/nestedset": "5.0.3",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.1",
         "laravelcollective/html": "^6.1",
         "retailcrm/api-client-php": "~5.0",
-        "spatie/laravel-permission": "^3.17"
+        "spatie/laravel-permission": "^3.18"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",
@@ -68,4 +68,5 @@
             "@php artisan key:generate --ansi"
         ]
     }
+
 }

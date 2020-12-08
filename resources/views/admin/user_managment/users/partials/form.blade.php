@@ -17,9 +17,9 @@
        value="@if(old('email')){{old('email')}}@else{{$user->email ?? ""}}@endif" required>
 
 <label for=""><strong>Пароль</strong></label>
-<input type="password" class="form-control" required name="password">
+<input type="password" class="form-control"  name="password">
 <label for=""><strong>Пароль еще раз</strong></label>
-<input type="password" class="form-control" required name="confirm-password">
+<input type="password" class="form-control"  name="confirm-password">
 <label for=""><strong>Роль</strong></label>
 @if(isset($userRole))
     {{ Form::select('roles[]', $roles,$userRole, array('class' => 'form-control','multiple')) }}

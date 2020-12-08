@@ -266,7 +266,7 @@ class ProductController extends Controller
                     if(isset($product)) {
                         if ($product->vendor_code == $code) {
                             $product->count = $product->count + 1;
-                            $product->save();
+                            //$product->save();
                             //знов повтор вставки розміру і кольору
                             $attributes = $product->attributes($product, $arr);
                             continue;
@@ -320,7 +320,7 @@ class ProductController extends Controller
                         // Categories
                         $categories = Category::where('title','=', $arr[2])->first();
                         if(!$categories){
-                            $site_category = CategoryImport::where('import_name', '=', $arr[2])->first();
+                            $site_category = CategoryImport::where('import_name', '=', $arr[2].'/'.$arr[3])->first();
                             if(isset($site_category))$site_category=$site_category->category_id;
                             if(!$site_category){
                                 //не потрібно бо вже всі потрібні створені
