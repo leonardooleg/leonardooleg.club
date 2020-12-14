@@ -57,7 +57,8 @@ class Product extends Model
             $color->name_color = $name;
 
             $file_full_path = 'public/uploads/colors/';
-            Storage::disk('local')->put($file_full_path  . $color_name, file_get_contents($arr[5]), 'public');
+            $image_color = file_get_contents($arr[5]);
+            Storage::disk('local')->put($file_full_path  . $color_name, $image_color, 'public');
             $color->img_color = '/storage/uploads/colors/'.$color_name;
 
             $color->brand_id = $brand_id;

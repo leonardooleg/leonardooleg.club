@@ -246,12 +246,13 @@ class ProductController extends Controller
         Storage::disk('public')->put($status_api,  '0;0;начало');
 
         /*Для статуса*/
+        $go=true;
         if ($import_file) {
             $data = "storage/". $import_file->store('uploads/import', 'public'); ///потім видаляти файли потрібно
-            if ( $xsl = file($data, FILE_IGNORE_NEW_LINES) ) {
-                $all_rows = count($xsl);
+            if ( $xsl_arr = file($data, FILE_IGNORE_NEW_LINES) ) {
+                $all_rows = count($xsl_arr);
                 $i=0;
-                foreach ($xsl as $xsl){
+                foreach ($xsl_arr as $xsl){
                    // continue;
                     if($i==0){
                         $i++;
@@ -263,10 +264,21 @@ class ProductController extends Controller
                     $i++;
                     $upload=false;
                     $code=$arr[13];
+                    //if($arr[1]=="Домашние халаты" and $arr[2]=="Халаты"){
+                    if($go) {
+                        if ($arr[0] == 'ДжойТ-ст') {
+                            $go = false;
+                        } else {
+                            continue;
+                        }
+                    }else{
+
+                    }
+                   // Storage::disk('public')->put($status_api, $all_rows . ';' . $i . ';' . $arr[8]);
                     if(isset($product)) {
                         if ($product->vendor_code == $code) {
                             $product->count = $product->count + 1;
-                            //$product->save();
+                            $product->update();
                             //знов повтор вставки розміру і кольору
                             $attributes = $product->attributes($product, $arr);
                             continue;
@@ -279,9 +291,21 @@ class ProductController extends Controller
                         //далі провыряэмо чи э такі лінки в базі, не має видаляємо з диску і з масиво
                         //і завантажуємо тільки відсутні
                         $medias=explode(';', $arr[15]);
+                        //перевірка доступності посилань медіа
                         foreach ($medias as $name){
-                            $medias_name[]=basename($name);
+                            if (@fopen($name, "r")) {
+                                $medias_name[]=basename($name);
+                            } else {
+                                continue;  ///Пропускаэмо такий матеріл де не дійсні посилання на фото!!
+                            }
                         }
+                        //перевірка доступності посилань кольору
+                        if (@fopen($arr[5], "r")) {
+                        } else {
+                            continue;  ///Пропускаэмо такий матеріл де не дійсні посилання на фото!!
+                        }
+
+
                         $upload= explode(';', $product->media);
                         foreach ($upload as $name){
                             $uploads_name[]=basename($name);
@@ -358,6 +382,21 @@ class ProductController extends Controller
                         if(!isset($categories_id)) $categories_id=$categories->id;
 
 
+                        $medias=explode(';', $arr[15]);
+                        //перевірка доступності посилань медіа
+                        foreach ($medias as $name){
+                            if (@fopen($name, "r")) {
+                            } else {
+                                continue 2;  ///Пропускаэмо такий матеріл де не дійсні посилання на фото!!
+                            }
+                        }
+                        //перевірка доступності посилань кольору
+                        if (@fopen($arr[5], "r")) {
+                        } else {
+                            continue;  ///Пропускаэмо такий матеріл де не дійсні посилання на фото!!
+                        }
+
+
                         $product = new Product();
                         $product->name= $arr[14];
                         $product->code= $arr[0];
@@ -396,15 +435,17 @@ class ProductController extends Controller
 
                         $brand = Brand::where('name_brand','=', $arr[3])->first();
                         if(!$brand){
-                            $brand = new Brand();
+                            $brand = false;
+                            $brand = new Brand;
                             $brand->name_brand=$arr[3];
+                            $brand->url=$arr[3];
                             $brand->save();
                         }
                         $product->brand_id = $brand->id;
                         $product->save();
 
                         //далі додаємо медіа
-                        $medias=explode(';', $arr[15]);
+
                         foreach ($medias as $media) {
                             $file_full_path = 'public/uploads/products/'.$product->id.'/';
                             $file_name = basename($media);
