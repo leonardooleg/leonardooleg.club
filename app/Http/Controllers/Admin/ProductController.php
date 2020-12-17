@@ -246,7 +246,20 @@ class ProductController extends Controller
         Storage::disk('public')->put($status_api,  '0;0;начало');
 
         /*Для статуса*/
-        $go=true;
+        if($request->type_parse=='continue'){
+            $go=true;
+            $last=Product::orderBy('id', 'desc')->first();
+            $last_code=$last->code;
+            $last_media=$last->media;
+            if(!$last_media){
+                Product::where('id', '=', $last->id)->delete();
+                DB::table('attributeables')->where('product_id', '=', $last->id)->delete();
+                DB::table('categoryables')->where('categoryable_id', '=', $last->id)->delete();
+            }
+        }else{
+            $go=false;
+        }
+
         if ($import_file) {
             $data = "storage/". $import_file->store('uploads/import', 'public'); ///потім видаляти файли потрібно
             if ( $xsl_arr = file($data, FILE_IGNORE_NEW_LINES) ) {
@@ -266,7 +279,7 @@ class ProductController extends Controller
                     $code=$arr[13];
                     //if($arr[1]=="Домашние халаты" and $arr[2]=="Халаты"){
                     if($go) {
-                        if ($arr[0] == 'ДжойТ-ст') {
+                        if ($arr[0] == $last_code) {
                             $go = false;
                         } else {
                             continue;
@@ -337,14 +350,14 @@ class ProductController extends Controller
                         else
                             $product->sale = 0;
                         $product->price= $arr[7];
-
+                        $product->published= 1;
                         DB::table('attributeables')->where('product_id', '=', $product->id)->delete();
                         $attributes = $product->attributes($product, $arr);
                     }else{
                         // Categories
-                        $categories = Category::where('title','=', $arr[2])->first();
-                        if(!$categories){
-                            $site_category = CategoryImport::where('import_name', '=', $arr[2].'/'.$arr[3])->first();
+                        //$categories = Category::where('title','=', $arr[2])->first(); //не потрібно бо в нас іморт тільки з файлу
+                       // if(!$categories){ //не потрібно бо в нас іморт тільки з файлу
+                            $site_category = CategoryImport::where('import_name', '=', $arr[1].'/'.$arr[2])->first();
                             if(isset($site_category))$site_category=$site_category->category_id;
                             if(!$site_category){
                                 //не потрібно бо вже всі потрібні створені
@@ -378,8 +391,8 @@ class ProductController extends Controller
                             }
 
 
-                        }
-                        if(!isset($categories_id)) $categories_id=$categories->id;
+                        //} //не потрібно бо в нас іморт тільки з файлу
+                       //  if(!isset($categories_id)) $categories_id=$categories->id; //не потрібно бо в нас іморт тільки з файлу
 
 
                         $medias=explode(';', $arr[15]);
@@ -430,7 +443,7 @@ class ProductController extends Controller
                         $product->price= $arr[7];
                         $product->count= 1;
                         $product->user_id= 1;
-                        $product->published= 0;
+                        $product->published= 1;
                         $product->slug = Str::slug( mb_substr($arr[14], 0, 40) ,'-');
 
                         $brand = Brand::where('name_brand','=', $arr[3])->first();

@@ -39,7 +39,23 @@
                             </div>
 
                             <table class="sale_order_full_table wrap_delivery_select">
-                            <tbody><tr>
+                            <tbody>
+                            <tr>
+                                <td valign="top" width="0%">
+                                    <div style="    display: flex;">
+                                        <input class="checkbox__input" type="radio" v-model="cartShipping.type" name="clientShipping" value="1000" checked="" v-on:change="addCartShipping()">
+                                        <i class="checkbox__icon"></i>
+                                    </div>
+                                </td>
+                                <td valign="top" width="100%">
+                                    <label class="dd_click" for="ID_DELIVERY_ID_40">
+                                        <b>СДЭК</b><br>
+                                        от 2 до 7 дней <br>						    Стоимость                                                            1000 руб.<br>
+                                        Доставка службой СДЭК.<br>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td valign="top" width="0%">
                                     <div style="    display: flex;">
                                         <input class="checkbox__input" type="radio" v-model="cartShipping.type" name="clientShipping" value="500" checked="" v-on:change="addCartShipping()">

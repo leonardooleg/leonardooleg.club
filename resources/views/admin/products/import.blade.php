@@ -24,7 +24,20 @@
                         <label class="custom-file-label" for="inputGroupFile01">Выбрать файл</label>
                     </div>
                 </div>
-
+                <hr>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="type_parse" value="new" id="type_parse" checked>
+                    <label class="form-check-label" for="type_parse">
+                        Новое добавление
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="type_parse" value="continue" id="type_parse2" >
+                    <label class="form-check-label" for="type_parse2">
+                        Продолжить добавление
+                    </label>
+                </div>
+                <hr>
                 <button  class="btn btn-primary float-right">Импортировать</button>
 
             </form>
