@@ -13,10 +13,12 @@ use App\Models\Color;
 use App\Models\Size;
 use Auth;
 use Darryldecode\Cart\CartCondition;
+use http\Env\Request;
 use Session;
 use App\Models\Order;
 use Illuminate\Support\Facades\DB;
-use YandexCheckout\Client;
+//use YandexCheckout\Client;
+use CdekSDK\Requests;
 
 class CartController extends Controller
 {
@@ -105,8 +107,6 @@ class CartController extends Controller
     public function addShipping()
     {
         $userId = (new \App\Models\Order)->user_guest();
-
-
             $name = 'shippingType';
             $type = 'shipping';
             $target = 'total';
@@ -129,6 +129,28 @@ class CartController extends Controller
             'data' => $cartCondition,
             'message' => "condition added."
         ),201,[]);
+    }
+
+    public function cartCity()
+    {
+        function jsonp_decode($jsonp, $assoc = false) { // PHP 5.3 adds depth as third parameter to json_decode
+            if($jsonp[0] !== '[' && $jsonp[0] !== '{') {
+                $jsonp = substr($jsonp, strpos($jsonp, '('));
+            }
+            $jsonp = trim($jsonp);      // remove trailing newlines
+            $jsonp = trim($jsonp,'()'); // remove leading and trailing parenthesis
+
+            return json_decode($jsonp, $assoc);
+
+        }
+        $sdeks=file_get_contents("https://api.cdek.ru/city/getListByTerm/jsonp.php?q=".$_GET['search']."&callback=foo");
+        $sdeks=jsonp_decode($sdeks);
+       foreach ($sdeks->geonames as $sdek){
+           $city[]=['city'=>$sdek->cityName, 'id'=>$sdek->id];
+
+       }
+        return response()->json($city);
+
     }
 
     public function addCondition()

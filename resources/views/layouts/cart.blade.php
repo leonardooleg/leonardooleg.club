@@ -23,12 +23,7 @@
     <!-- ICON NEEDS FONT AWESOME FOR CHEVRON UP ICON -->
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     <!-- Favicons -->
-    <link rel="apple-touch-icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
-    <link rel="icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
-    <link rel="icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
-    <link rel="manifest" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/manifest.json">
-    <link rel="mask-icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/safari-pinned-tab.svg" color="#563d7c">
-    <link rel="icon" href="https://getbootstrap.com/docs/4.4/assets/img/favicons/favicon.ico">
+
     <meta name="msapplication-config" content="/docs/4.4/assets/img/favicons/browserconfig.xml">
     <meta name="theme-color" content="#563d7c">
     {{--иконки--}}
@@ -37,6 +32,37 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.5.9/slick-theme.min.css" rel="stylesheet" >
     <link href="{{ asset('css/cart.css') }}" rel="stylesheet">
     <link href="{{ asset('css/delivery.css') }}" rel="stylesheet">
+    <style scoped>
+        .autocomplete {
+            position: relative;
+        }
+
+        .autocomplete-results {
+            z-index: 1000;
+            position: absolute;
+            padding: 0;
+            margin: 0;
+            border: 1px solid rgb(186, 206, 228);
+            border-radius: 4px;
+            height: 120px;
+            overflow: auto;
+            background-color: white;
+        }
+
+        .autocomplete-result {
+            list-style: none;
+            text-align: left;
+            padding: 4px 2px;
+            cursor: pointer;
+            background-color: white;
+        }
+
+        .autocomplete-result.is-active,
+        .autocomplete-result:hover {
+            background-color: #4AAE9B;
+            color: white;
+        }
+    </style>
 </head>
 <body class="page">
     <div  >
@@ -57,6 +83,7 @@
             <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
             <script src="/js/zoomOnHover.js" type="text/javascript"></script>
             @include('layouts.footerCart')
+
 
     </div>
 </body>

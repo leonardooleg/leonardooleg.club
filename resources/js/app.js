@@ -25,6 +25,7 @@ Vue.component('product-component', require('./components/SlickProductComponent.v
 Vue.component('recommended-component', require('./components/RecommendedProductComponent.vue').default);
 Vue.component('InfiniteLoading', require('vue-infinite-loading'));
 Vue.component('v-slick', require('./components/SlickComponent.vue').default);
+Vue.component('sity-search', require('./components/SitySearchComponent.vue').default);
 //Vue.component('fotorama', require('./components/Fotorama.vue').default);
 
 /**
@@ -34,6 +35,7 @@ Vue.component('v-slick', require('./components/SlickComponent.vue').default);
  */
 
 Vue.use(VueResource);
+
 const app = new Vue({
     el: '#app',
     props: {
@@ -123,6 +125,7 @@ const app = new Vue({
                 console.log(error);
             });
         },
+
         addCartCondition: function () {
             console.log(3);
             var _this = this;
@@ -270,7 +273,7 @@ const app = new Vue({
 
 
             }
-        }
+        },
     },
     /* computed: {
          sum() {

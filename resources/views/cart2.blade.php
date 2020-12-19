@@ -29,78 +29,80 @@
                 <form id="app" class="form cart row" action="{{route('cart2.add')}}" method="POST">
                     <div class="col-md-9  basket_wrapp">
                         @csrf
-
                         <div class="order__block" id="delivery">
                             <h3 class="cart__title">Доставка:</h3>
                             <div class="form-group move_ddlocation">
-                                <label for="exampleInputEmail1">Выберите город доставки:</label>
-                                <input type="text" name="clientCity" class="form-control search-suggest" value="Городской город" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                                <label for="clientCity">Выберите город доставки:</label>
+<!--                                <input type="text" name="clientCity" class="form-control search-suggest"   id="clientCity"  required>-->
+                                <sity-search></sity-search>
+
 
                             </div>
 
                             <table class="sale_order_full_table wrap_delivery_select">
-                            <tbody>
-                            <tr>
-                                <td valign="top" width="0%">
-                                    <div style="    display: flex;">
-                                        <input class="checkbox__input" type="radio" v-model="cartShipping.type" name="clientShipping" value="1000" checked="" v-on:change="addCartShipping()">
-                                        <i class="checkbox__icon"></i>
-                                    </div>
-                                </td>
-                                <td valign="top" width="100%">
-                                    <label class="dd_click" for="ID_DELIVERY_ID_40">
-                                        <b>СДЭК</b><br>
-                                        от 2 до 7 дней <br>						    Стоимость                                                            1000 руб.<br>
-                                        Доставка службой СДЭК.<br>
-                                    </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td valign="top" width="0%">
-                                    <div style="    display: flex;">
-                                        <input class="checkbox__input" type="radio" v-model="cartShipping.type" name="clientShipping" value="500" checked="" v-on:change="addCartShipping()">
-                                        <i class="checkbox__icon"></i>
-                                    </div>
-                                </td>
-                                <td valign="top" width="100%">
-                                    <label class="dd_click" for="ID_DELIVERY_ID_40">
-                                        <b>Почта России</b><br>
-                                        от 2 до 7 дней <br>						    Стоимость                                                            500 руб.<br>
-                                        Посылка Почтой России.<br>
-                                    </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td valign="top" width="0%">
-                                    <div style="    display: flex;">
-                                        <input class="checkbox__input" type="radio" v-model="cartShipping.type" name="clientShipping" value="1000"   v-on:change="addCartShipping()">
-                                        <i class="checkbox__icon"></i>
-                                    </div>
-                                </td>
-                                <td valign="top" width="100%">
-                                    <label class="dd_click" for="ID_DELIVERY_ID_51">
-                                        <b>EMS Почта России</b><br>
-                                        от 2 часов <br>						    Стоимость                                                            1,000 руб.<br>
-                                        Сегодня, минимум через 2 часа, до вашей квартиры или офиса.<br>
-                                    </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td valign="top" width="0%">
-                                    <div style="    display: flex;">
-                                        <input class="checkbox__input" type="radio" v-model="cartShipping.type" name="clientShipping" value="0"   v-on:change="addCartShipping()" >
-                                        <i class="checkbox__icon" ></i>
-                                    </div>
-                                </td>
-                                <td valign="top" width="100%">
-                                    <label class="dd_click" for="ID_DELIVERY_ID_96">
-                                        <b>Самовывоз</b><br>
-                                        от 1 до 7 дней <br>						    Стоимость                                                            0 руб.<br>
-                                        Мы поможем Вам выбрать наиболее подходящий тип доставки.<br>
-                                    </label>
-                                </td>
-                            </tr>
-                            </tbody></table>
+                                <tbody>
+                                    <tr>
+                                        <td valign="top" width="0%">
+                                            <div style="    display: flex;">
+                                                <input class="checkbox__input" type="radio" v-model="cartShipping.type" name="clientShipping" value="1000" checked v-on:change="addCartShipping()">
+                                                <i class="checkbox__icon"></i>
+                                            </div>
+                                        </td>
+                                        <td valign="top" width="100%">
+                                            <label class="dd_click" for="ID_DELIVERY_ID_39">
+                                                <b>СДЭК</b><br>
+                                                от 2 до 7 дней <br>						    Стоимость                                                            1000 руб.<br>
+                                                Доставка службой СДЭК.<br>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="top" width="0%">
+                                            <div style="    display: flex;">
+                                                <input class="checkbox__input" type="radio" v-model="cartShipping.type" name="clientShipping" value="500" v-on:change="addCartShipping()">
+                                                <i class="checkbox__icon"></i>
+                                            </div>
+                                        </td>
+                                        <td valign="top" width="100%">
+                                            <label class="dd_click" for="ID_DELIVERY_ID_40">
+                                                <b>Почта России</b><br>
+                                                от 2 до 7 дней <br>						    Стоимость                                                            500 руб.<br>
+                                                Посылка Почтой России.<br>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="top" width="0%">
+                                            <div style="    display: flex;">
+                                                <input class="checkbox__input" type="radio" v-model="cartShipping.type" name="clientShipping" value="1000"   v-on:change="addCartShipping()">
+                                                <i class="checkbox__icon"></i>
+                                            </div>
+                                        </td>
+                                        <td valign="top" width="100%">
+                                            <label class="dd_click" for="ID_DELIVERY_ID_51">
+                                                <b>EMS Почта России</b><br>
+                                                от 2 часов <br>						    Стоимость                                                            1,000 руб.<br>
+                                                Сегодня, минимум через 2 часа, до вашей квартиры или офиса.<br>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="top" width="0%">
+                                            <div style="    display: flex;">
+                                                <input class="checkbox__input" type="radio" v-model="cartShipping.type" name="clientShipping" value="0"   v-on:change="addCartShipping()" >
+                                                <i class="checkbox__icon" ></i>
+                                            </div>
+                                        </td>
+                                        <td valign="top" width="100%">
+                                            <label class="dd_click" for="ID_DELIVERY_ID_96">
+                                                <b>Самовывоз</b><br>
+                                                от 1 до 7 дней <br>						    Стоимость                                                            0 руб.<br>
+                                                Мы поможем Вам выбрать наиболее подходящий тип доставки.<br>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                         <div class="order__block">
                             <h3 class="cart__title">Адрес и личные данные:</h3>

@@ -106,6 +106,8 @@ Route::get('/cart',[CartController::class ,'index'])->name('cart.index');
 Route::post('/cart',[CartController::class ,'add'])->name('cart.add');
 Route::get('/cart/shipping',[CartController::class ,'shipping'])->name('cart.shipping');
 Route::post('/cart/shipping',[CartController::class ,'addShipping'])->name('cart.addShipping');
+Route::post('/cart/shipping',[CartController::class ,'addShipping'])->name('cart.addShipping');
+Route::get('/cart/city',[CartController::class ,'cartCity'])->name('cart.cartCity');
 Route::post('/cart/conditions',[CartController::class ,'addCondition'])->name('cart.addCondition');
 Route::delete('/cart/conditions',[CartController::class ,'clearCartConditions'])->name('cart.clearCartConditions');
 Route::get('/cart/details',[CartController::class ,'details'])->name('cart.details');

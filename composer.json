@@ -22,7 +22,9 @@
         "laravel/ui": "^3.1",
         "laravelcollective/html": "^6.1",
         "retailcrm/api-client-php": "~5.0",
-        "spatie/laravel-permission": "^3.18"
+        "sanmai/cdek-sdk": "^0.6.48",
+        "spatie/laravel-permission": "^3.18",
+        "spatie/laravel-searchable": "^1.9"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",
