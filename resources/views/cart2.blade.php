@@ -33,18 +33,25 @@
                             <h3 class="cart__title">Доставка:</h3>
                             <div class="form-group move_ddlocation">
                                 <label for="clientCity">Выберите город доставки:</label>
-<!--                                <input type="text" name="clientCity" class="form-control search-suggest"   id="clientCity"  required>-->
-                                <sity-search></sity-search>
-
-
+                                <div id="autocomplete">
+                                    <input  name="clientCity" class="form-control search-suggest"    @input="setCity" list="datalistOptions" id="clientCity"  type="text" placeholder="Город"  v-model="query" required>
+                                    <datalist id="datalistOptions" v-if="results.length > 0 && query">
+                                        <option v-for="result in results.slice(0,10)" :keys="result.id"  :value="result.city"></option>
+                                    </datalist>
+                                </div>
                             </div>
+
+                            <input    type="text" class="form-control hidden"   v-model="cityID"  hidden />
+                            <input  name="CdekID" type="text" class="form-control hidden"   v-model="CdekID"  hidden />
+
+
 
                             <table class="sale_order_full_table wrap_delivery_select">
                                 <tbody>
-                                    <tr>
+                                    <tr class="form-check">
                                         <td valign="top" width="0%">
                                             <div style="    display: flex;">
-                                                <input class="checkbox__input" type="radio" v-model="cartShipping.type" name="clientShipping" value="1000" checked v-on:change="addCartShipping()">
+                                                <input class="checkbox__input form-check-input" type="radio" v-model="cartShipping.type" name="clientShipping" value="cdek" v-on:change="addCartShipping()" :checked="false"  required>
                                                 <i class="checkbox__icon"></i>
                                             </div>
                                         </td>
@@ -56,10 +63,10 @@
                                             </label>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="form-check">
                                         <td valign="top" width="0%">
                                             <div style="    display: flex;">
-                                                <input class="checkbox__input" type="radio" v-model="cartShipping.type" name="clientShipping" value="500" v-on:change="addCartShipping()">
+                                                <input class="checkbox__input form-check-input" type="radio" v-model="cartShipping.type" name="clientShipping" value="pochta" v-on:change="addCartShipping()" :checked="false">
                                                 <i class="checkbox__icon"></i>
                                             </div>
                                         </td>
@@ -71,10 +78,10 @@
                                             </label>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="form-check">
                                         <td valign="top" width="0%">
                                             <div style="    display: flex;">
-                                                <input class="checkbox__input" type="radio" v-model="cartShipping.type" name="clientShipping" value="1000"   v-on:change="addCartShipping()">
+                                                <input class="checkbox__input form-check-input" type="radio" v-model="cartShipping.type" name="clientShipping" value="emspochta"   v-on:change="addCartShipping()" :checked="false">
                                                 <i class="checkbox__icon"></i>
                                             </div>
                                         </td>
@@ -86,10 +93,10 @@
                                             </label>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="form-check">
                                         <td valign="top" width="0%">
                                             <div style="    display: flex;">
-                                                <input class="checkbox__input" type="radio" v-model="cartShipping.type" name="clientShipping" value="0"   v-on:change="addCartShipping()" >
+                                                <input class="checkbox__input form-check-input" type="radio" v-model="cartShipping.type" name="clientShipping" value="pickup"   v-on:change="addCartShipping()" :checked="false">
                                                 <i class="checkbox__icon" ></i>
                                             </div>
                                         </td>
@@ -209,7 +216,7 @@
 
                                 <div class="list__item">
                                     <div class="list__label">Доставка:</div>
-                                    <div class="list__value">@{{cartShipping.type}} руб.</div>
+                                    <div class="list__value">@{{cartShipping.price}} руб.</div>
                                 </div>
                                 {{--<div class="list__item">
                                     <div class="list__label">Скидка</div>

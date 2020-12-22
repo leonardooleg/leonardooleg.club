@@ -1,7 +1,7 @@
 <?php
 namespace App;
 use Illuminate\Validation\Validator;
-use Session;
+use Illuminate\Support\Facades\Session;
 
 class CustomValidator extends Validator {
     public function validateReinclusion($attribute, $value, $parameters)

@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 //use YandexCheckout\Client;
 use CdekSDK\Requests;
 
+
 class CartController extends Controller
 {
     public function index()
@@ -50,9 +51,7 @@ class CartController extends Controller
 
         if(request()->ajax())
         {
-
             $shipping = \Cart::session($userId)->getCondition('shippingType')->getValue();
-
             return response(array(
                 'success' => true,
                 'data' => $shipping,
@@ -106,11 +105,60 @@ class CartController extends Controller
 
     public function addShipping()
     {
+        $delivery=request('delivery');
+       // $delivery=request('type');
+        $city=request('city');
+        $client = new \CdekSDK\CdekClient('VxnrnW9xHsyUXj3AW55AHextammXqLdx', '6IQmF7nyIoPotAlDGHJprTGIqjUeAUyr');
+
+        if ($delivery=='cdek'){
+            $request = new Requests\CalculationWithTariffListAuthorizedRequest();
+            $request->setSenderCityPostCode('107014')
+                ->setReceiverCityPostCode($city)
+                ->addTariffToList(1)
+                ->addTariffToList(8)
+                ->addPackage([
+                    'weight' => 0.7,
+                    'length' => 30,
+                    'width'  => 30,
+                    'height' => 30,
+                ]);
+
+            $response = $client->sendCalculationWithTariffListRequest($request);
+
+            /** @var \CdekSDK\Responses\CalculationWithTariffListResponse $response */
+            if ($response->hasErrors()) {
+                // обработка ошибок
+            }
+            foreach ($response->getResults() as $result) {
+                if ($result->hasErrors()) {
+                    // обработка ошибок
+                    continue;
+                }
+                if (!$result->getStatus()) {
+                    continue;
+                }
+               // $result->getTariffId();
+                // int(1)
+               $price= $result->getPrice();
+                break;
+                // double(1570)
+                //$result->getDeliveryPeriodMin();
+                // int(4)
+                //$result->getDeliveryPeriodMax();
+                // int(5)
+            }
+        }elseif ($delivery=='pochta'){
+            $price=500;
+        }elseif ($delivery=='emspochta'){
+            $price=1000;
+        }else{
+            $price=0;
+        }
         $userId = (new \App\Models\Order)->user_guest();
             $name = 'shippingType';
             $type = 'shipping';
             $target = 'total';
-            $value = request('type');
+
 
         \Cart::session($userId)->clearCartConditions();
 
@@ -118,10 +166,12 @@ class CartController extends Controller
             'name' => $name,
             'type' => $type,
             'target' => $target, // this condition will be applied to cart's subtotal when getSubTotal() is called.
-            'value' => $value,
+            'value' => $price,
+            'delivery' => $delivery,
+            'CdekID' => request('CdekID'),
             'attributes' => array()
         ]);
-
+//////////////////////////////////////
         \Cart::session($userId)->condition($cartCondition);
 
         return response(array(
@@ -143,13 +193,48 @@ class CartController extends Controller
             return json_decode($jsonp, $assoc);
 
         }
-        $sdeks=file_get_contents("https://api.cdek.ru/city/getListByTerm/jsonp.php?q=".$_GET['search']."&callback=foo");
-        $sdeks=jsonp_decode($sdeks);
-       foreach ($sdeks->geonames as $sdek){
-           $city[]=['city'=>$sdek->cityName, 'id'=>$sdek->id];
+        $cdeks=file_get_contents("https://api.cdek.ru/city/getListByTerm/jsonp.php?q=".$_GET['search']."&callback=foo");
+        $cdeks=jsonp_decode($cdeks);
+       foreach ($cdeks->geonames as $cdek){
+           $city[]=['city'=>$cdek->cityName.', '.$cdek->regionName, 'id'=>$cdek->postCodeArray[0], 'CdekID'=>$cdek->id];
 
        }
         return response()->json($city);
+
+    }
+
+    public function cartPVZ($CityId)
+    {
+        //не закінчив реалізацію, є тільки ця функція для впадающого поля для ПВЗ
+        $client = new \CdekSDK\CdekClient('VxnrnW9xHsyUXj3AW55AHextammXqLdx', '6IQmF7nyIoPotAlDGHJprTGIqjUeAUyr');
+        $request = new Requests\PvzListRequest();
+        $request->setCityId($CityId);
+        $request->setType(Requests\PvzListRequest::TYPE_ALL);
+        $request->setCashless(true);
+        $request->setCash(true);
+        $request->setCodAllowed(true);
+        $request->setDressingRoom(true);
+
+        $response = $client->sendPvzListRequest($request);
+
+        if ($response->hasErrors()) {
+            // обработка ошибок
+        }
+
+        /** @var \CdekSDK\Responses\PvzListResponse $response */
+        foreach ($response as $item) {
+            /** @var \CdekSDK\Common\Pvz $item */
+            // всевозможные параметры соответствуют полям из API СДЭК
+            $item->Code;
+            $item->Name;
+            $item->Address;
+
+            foreach ($item->OfficeImages as $image) {
+                $image->getUrl();
+            }
+        }
+
+        //return response()->json($city);
 
     }
 
@@ -236,6 +321,7 @@ class CartController extends Controller
         $userId = (new \App\Models\Order)->user_guest();
 
         \Cart::session($userId)->remove($id);
+        \Cart::session($userId)->clearCartConditions();
 
         return response(array(
             'success' => true,

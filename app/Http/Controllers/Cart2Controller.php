@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Order;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -26,15 +27,17 @@ class Cart2Controller extends Controller
     }
 
     public function add(Request $request){
-        $valid = Validator::make($request->all(),[
+       /* $valid = Validator::make($request->all(),[
             '_check' => 'reinclusion',
         ]);
         if($valid->fails()){
             return redirect()->route('welcome');
-        }
+        }*/
+        //$city_index=$request->cityID;
+        $CdekID=$request->CdekID;
         $userId = (new \App\Models\Order)->user_guest();
         $c_id= $userId.'_cart_items';
-        $orders = new Order($request->all());
+        $orders = new Order($request->except('CdekID'));
         $cartCollection = \Cart::session($userId)->getContent();
         $cart = $cartCollection->sort();
         $cart->each(function($item) use (&$items)
@@ -56,18 +59,11 @@ class Cart2Controller extends Controller
                 'ctdh3KV0salK3A32t2I7TFTiSjem712B',
                 \RetailCrm\ApiClient::V5
             );
-            if($orders["clientShipping"]=="500"){
-                $shipping='russian-post';
-            }elseif ($orders["clientShipping"]=="1000"){
-                $shipping='ems';
-            }else{
-                $shipping='self-delivery';
-            }
 
             foreach (json_decode($orders->cart_data) as $one_item){
                 $items_ctr[]=array(
                     'productName' => $one_item->name,
-                    'initialPrice' => $one_item->price,
+                    'initialPrice' => $orders->total_price,
                     'quantity' => $one_item->quantity,
                     'properties' => [
                         [
@@ -82,6 +78,7 @@ class Cart2Controller extends Controller
                 );
             }
             try {
+                $c_address=explode(", ", $orders["clientCity"]);
                 $response = $client_retail->request->ordersCreate(array(
                     'firstName' => $orders["clientName"],
                     //'lastName' => 'Фамилия',
@@ -91,14 +88,21 @@ class Cart2Controller extends Controller
                     'customerComment' => $orders["clientComment"],
                     'items' => $items_ctr,
                     'delivery' => array(
-                        'code' => $shipping,
-                        'address' => array(
-                            'index' => $orders["clientIndex"],
-                            'city' => $orders["clientCity"],
-                           // 'region' => $orders["clientShipping"],
+                        'code' => $orders["clientShipping"],
+
+
+                        'data' => array(
+                            'receiverCity' => $CdekID,
+                        ),
+                       'address' => array(
+                            //'index' => $orders["clientIndex"],
+                            //'index' => $city_index,
+                            'city' => $c_address[0],
+                            //'receiverCity' => $CdekID,
+                            'region' => $c_address[1],
                             'street' => $orders["clientAddress"],
-                            //'building' => $orders["clientShipping"],
-                            //'flat' => $orders["clientShipping"],
+                            'building' => $orders["clientShipping"],
+                            'flat' => $orders["clientShipping"],
                             'notes' => $orders["clientAddress"],
                         ),
 

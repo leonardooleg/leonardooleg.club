@@ -25,7 +25,6 @@ Vue.component('product-component', require('./components/SlickProductComponent.v
 Vue.component('recommended-component', require('./components/RecommendedProductComponent.vue').default);
 Vue.component('InfiniteLoading', require('vue-infinite-loading'));
 Vue.component('v-slick', require('./components/SlickComponent.vue').default);
-Vue.component('sity-search', require('./components/SitySearchComponent.vue').default);
 //Vue.component('fotorama', require('./components/Fotorama.vue').default);
 
 /**
@@ -38,6 +37,11 @@ Vue.use(VueResource);
 
 const app = new Vue({
     el: '#app',
+    watch: {
+        query(after, before) {
+            this.searchMembers();
+        }
+    },/////пошук міста
     props: {
         _token:{
             type: String,
@@ -45,6 +49,10 @@ const app = new Vue({
         },
     },
     data: {
+        query: null,/////пошук міста
+        cityID: '',/////пошук міста
+        CdekID: '',/////пошук міста
+        results: [],/////пошук міста
         details: {
             sub_total: 0,
             total: 0,
@@ -56,6 +64,10 @@ const app = new Vue({
         ],
         itemCount: 0,
         items: [],
+        cartShipping: {
+            type: '',
+            price: '',
+        },
         item: {
             b: 1,
             id: 1 ,
@@ -74,7 +86,6 @@ const app = new Vue({
                 img: ''
             }
         },
-        cartShipping: {type: 0},
         cartCondition: {
             name: '',
             type: '',
@@ -89,6 +100,83 @@ const app = new Vue({
         this.loadItems();
     },
     methods: {
+        //пошук міста
+        setCity(e) {
+
+            this.setCdek(e);
+            this.getID(e.target.value).then(
+                resposnse => (this.cityID = resposnse)
+            );
+
+        },
+        async getID(value) {
+            let promise = new Promise((resolve, reject) => {
+                this.results.forEach(item => {
+                  /*  console.log('item.city');
+                    console.log(item.city);
+                    console.log('value');
+                    console.log(value);
+                    console.log('item');
+                    console.log(item);*/
+                    if (item.city === value) resolve(item.id);
+                });
+            });
+
+            return await promise;
+        },
+        setCdek(e) {
+          /*  console.log('CdekID');
+            console.log(e.target.value);*/
+            this.getCdekID(e.target.value).then(
+                resposnse => (this.CdekID = resposnse)
+            );
+
+        },
+        async getCdekID(value) {
+            let promise = new Promise((resolve, reject) => {
+                this.results.forEach(item => {
+                    if (item.city === value){
+                     /*   console.log(item.city);
+                        console.log(value);
+                        console.log(item.CdekID);*/
+                        resolve(item.CdekID);
+                    }
+                });
+            });
+
+            return await promise;
+        },
+        //додавання доставки
+        addCartShipping: function () {
+            var _this = this;
+            this.$http.post('/cart/shipping', {
+                _token: _token,
+                type: _this.cartShipping.price,
+                city: _this.cityID,
+                CdekID: _this.CdekID,
+                delivery: _this.cartShipping.type,
+            }).then(function (success) {
+                _this.loadItems();
+            }, function (error) {
+                console.log(error);
+            });
+        },
+        loadCartShipping: function () {
+
+            var _this = this;
+            this.$http.get('/cart/shipping').then(function (success) {
+                _this.cartShipping.price = success.body.data;
+                console.log(success.body.data);
+            }, function (error) {
+                console.log(error);
+            });
+        },
+        searchMembers() {
+            axios.get('/cart/city', { params: { search: this.query } })
+                .then(response => this.results = response.data)
+                .catch(error => {});
+        },
+        //пошук міста
         addItem: function () {
             var _this = this;
             this.$http.post('/cart', {
@@ -112,19 +200,7 @@ const app = new Vue({
             });
             console.log('ok 2');
         },
-        addCartShipping: function () {
-            console.log('shipping');
-            var _this = this;
 
-            this.$http.post('/cart/shipping', {
-                _token: _token,
-                type: _this.cartShipping.type,
-            }).then(function (success) {
-                _this.loadItems();
-            }, function (error) {
-                console.log(error);
-            });
-        },
 
         addCartCondition: function () {
             console.log(3);
@@ -174,7 +250,7 @@ const app = new Vue({
                 _this.itemCount = success.body.data.length;
                 _this.loadCartDetails();
                 _this.attr();
-                /* if(preg_match('!cart!', $_SERVER['REQUEST_URI'])) _this.loadCartShipping();*/
+                _this.loadCartShipping();// if(preg_match('!cart!', $_SERVER['REQUEST_URI']))
             }, function (error) {
                 console.log(error);
             });
@@ -190,16 +266,7 @@ const app = new Vue({
                 console.log(error);
             });
         },
-        loadCartShipping: function () {
 
-            var _this = this;
-
-            this.$http.get('/cart/shipping').then(function (success) {
-                _this.cartShipping.type = success.body.data;
-            }, function (error) {
-                console.log(error);
-            });
-        },
         updateItem: function (cart_id, event) {
             var _this = this;
             this.$http.get('/cart/update/' + cart_id + '&' + event.target.value, {}).then(function (success) {
